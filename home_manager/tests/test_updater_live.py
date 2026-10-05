@@ -26,8 +26,9 @@ print("page:", result["page"])
 print("zip url:", (result["zip"] or "")[:110])
 print("newer than 1.1.0:", updater.is_newer(v, "1.1.0"))
 print("newer than 1.1.1:", updater.is_newer(v, "1.1.1"))
-assert v == "1.1.1"
+assert v == "1.1.2"
 assert updater.is_newer(v, "1.1.0") is True
-assert updater.is_newer(v, "1.1.1") is False
-assert "HomeManager-v1.1.1-portable.zip" in (result["zip"] or "")
+assert updater.is_newer(v, "1.1.1") is True
+assert updater.is_newer(v, "1.1.2") is False
+assert "HomeManager-v1.1.2-portable.zip" in (result["zip"] or "")
 print("OK")
