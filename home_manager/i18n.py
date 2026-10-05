@@ -319,15 +319,41 @@ TR = {
     "col_wait": {"zh": "等待(秒)", "ja": "待機(秒)", "en": "Wait (s)"},
     "col_pos": {"zh": "点击坐标", "ja": "クリック座標", "en": "Position"},
     "col_act": {"zh": "方式", "ja": "操作", "en": "Action"},
-    "add_click": {"zh": "添加点击", "ja": "クリック追加", "en": "Add click"},
-    "pick_coord": {"zh": "拾取坐标", "ja": "座標を取得", "en": "Pick point"},
-    "toggle_double": {"zh": "切换双击", "ja": "ダブル切替", "en": "Toggle double"},
-    "del_selected": {"zh": "删除选中", "ja": "選択を削除", "en": "Delete selected"},
+    "add_click": {"zh": "添加点击", "ja": "クリック追加", "en": "Add"},
+    "pick_coord": {"zh": "拾取坐标", "ja": "座標を取得", "en": "Pick"},
+    "toggle_double": {"zh": "切换双击", "ja": "ダブル切替", "en": "Double"},
+    "del_selected": {"zh": "删除选中", "ja": "選択を削除", "en": "Delete"},
+    "win_title": {"zh": "目标窗口标题（可选）", "ja": "目標ウィンドウ（任意）",
+                  "en": "Target window title (optional)"},
+    "win_wait": {"zh": "等待窗口出现(秒)", "ja": "ウィンドウ待機(秒)",
+                 "en": "Wait for window (s)"},
+    "bettergi_tpl": {"zh": "BetterGI 一条龙模板", "ja": "BetterGIテンプレート",
+                     "en": "BetterGI template"},
+    "bettergi_name": {"zh": "BetterGI 一条龙", "ja": "BetterGI オート周回",
+                      "en": "BetterGI auto-run"},
+    "bettergi_pick_exe": {
+        "zh": "没有自动找到 BetterGI.exe，请点“浏览…”手动选择，再点一次模板按钮。",
+        "ja": "BetterGI.exe が見つかりませんでした。「参照…」で手動選択してください。",
+        "en": "BetterGI.exe was not found automatically. Click \"Browse…\" to choose it."},
+    "test_run": {"zh": "试运行", "ja": "テスト実行", "en": "Test run"},
+    "test_started": {
+        "zh": "试运行已开始，请观察目标程序是否按步骤操作；窗口未出现时会等待设定的秒数。",
+        "ja": "テストを開始しました。対象アプリが手順どおり動くか確認してください。",
+        "en": "Test run started. Watch the target app perform the steps; it waits for "
+              "the window if it is not open yet."},
+    "pos_relative": {"zh": "窗口 %.1f%%, %.1f%%", "ja": "ウィンドウ %.1f%%, %.1f%%",
+                     "en": "Window %.1f%%, %.1f%%"},
+    "warn_wait": {"zh": "等待窗口秒数需为 1-300 的整数",
+                  "ja": "待機秒数は 1〜300 の整数にしてください",
+                  "en": "Wait seconds must be an integer from 1 to 300"},
     "click_hint": {
-        "zh": "提示：先“添加点击”，再选中该行点“拾取坐标”，3 秒内把鼠标移到目标位置即可。",
-        "ja": "ヒント：「クリック追加」→ 行を選択 →「座標を取得」。3秒以内にマウスを目標へ。",
-        "en": "Tip: Add a click, select the row, press \"Pick point\", then move the "
-              "mouse to the target within 3 seconds."},
+        "zh": "提示：填了“目标窗口标题”后，拾取到的点击会自动记为窗口相对位置，窗口移动也不会点偏；"
+              "可先点“试运行”验证，再保存。模板已内置 BetterGI：点一条龙→点任务列表开始。",
+        "ja": "ヒント：「目標ウィンドウ」を入力すると、クリック位置はウィンドウ相対で保存され、"
+              "ウィンドウが動いてもずれません。保存前に「テスト実行」で確認できます。",
+        "en": "Tip: with a target window title set, picked points are stored relative "
+              "to that window, so they stay correct even if it moves. Use \"Test run\" "
+              "to verify before saving."},
     "single_click": {"zh": "单击", "ja": "シングル", "en": "Single"},
     "double_click": {"zh": "双击", "ja": "ダブル", "en": "Double"},
     "choose_exe_title": {"zh": "选择要定时打开的程序", "ja": "起動するアプリを選択",

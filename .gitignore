@@ -33,3 +33,6 @@ desktop.ini
 # 构建日志 / 授权临时文件
 *.log
 gh_auth.log
+
+# 集市下载的壁纸等运行时资源
+home_manager/assets/wallpapers/

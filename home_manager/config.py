@@ -4,7 +4,7 @@ import os
 import sys
 
 APP_NAME = "居家管家"
-APP_VERSION = "1.1.1"
+APP_VERSION = "1.1.2"
 
 # GitHub 发布地址（仓库建好后填入 owner/repo，用于检查更新）
 GITHUB_REPO = "Yimo0101/home-manager"   # GitHub 仓库，用于 Release 检查更新

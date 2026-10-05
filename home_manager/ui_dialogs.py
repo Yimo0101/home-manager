@@ -2,11 +2,13 @@
 """居家管家 - 编辑对话框：闹钟 / 提醒 / 定时打开程序 / 日历日程（三语）"""
 import datetime
 import os
+import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 import i18n
-from actions import get_cursor_pos
+from actions import (find_bettergi, find_window, get_cursor_pos, launch_task,
+                     window_rect)
 from media import SoundPlayer
 from ui_style import (BG, BORDER, CARD, CHIP_BG, CHIP_OFF, F, PRIMARY, TEXT,
                       TEXT_SUB, TimePicker, WeekdayPicker)
@@ -326,45 +328,62 @@ class ProgramTaskDialog(Modal, RepeatMixin):
         self.item = item or {"name": i18n.t("default_program_name"), "type": "program",
                              "time": "08:30",
                              "days": list(range(7)), "date": "", "enabled": True,
-                             "exe": "", "args": "", "clicks": []}
+                             "exe": "", "args": "", "window_title": "",
+                             "wait_window": 30, "clicks": []}
         self.steps = [dict(s) for s in self.item.get("clicks", [])]
-        super().__init__(parent, i18n.t("dlg_program_title"), 690, 680)
+        super().__init__(parent, i18n.t("dlg_program_title"), 800, 700)
         self._build()
 
     def _build(self):
         b = self.body
         self.row(i18n.t("task_name"), 0)
         self.name_var = tk.StringVar(value=self.item.get("name", ""))
-        tk.Entry(b, textvariable=self.name_var, width=48, relief="solid", bd=1,
+        tk.Entry(b, textvariable=self.name_var, width=52, relief="solid", bd=1,
                  font=F(11)).grid(row=0, column=1, columnspan=3, sticky="w", padx=(10, 0))
         self.row(i18n.t("exe_path"), 1)
         self.exe_var = tk.StringVar(value=self.item.get("exe", ""))
-        tk.Entry(b, textvariable=self.exe_var, width=48, relief="solid", bd=1,
+        tk.Entry(b, textvariable=self.exe_var, width=52, relief="solid", bd=1,
                  font=F(10)).grid(row=1, column=1, columnspan=3, sticky="w",
                                   padx=(10, 0), pady=(4, 0))
-        ttk.Button(b, text=i18n.t("browse"), command=self._browse).grid(
-            row=2, column=1, sticky="w", padx=(10, 0), pady=(4, 0))
+        row2 = tk.Frame(b, bg=BG)
+        row2.grid(row=2, column=1, columnspan=3, sticky="w", padx=(10, 0), pady=(4, 0))
+        ttk.Button(row2, text=i18n.t("browse"), command=self._browse).pack(side="left")
+        ttk.Button(row2, text=i18n.t("bettergi_tpl"),
+                   command=self._apply_bettergi).pack(side="left", padx=8)
+        ttk.Button(row2, text=i18n.t("test_run"),
+                   command=self._test_run).pack(side="left")
         self.row(i18n.t("args"), 3)
         self.args_var = tk.StringVar(value=self.item.get("args", ""))
         tk.Entry(b, textvariable=self.args_var, width=36, relief="solid", bd=1,
                  font=F(10)).grid(row=3, column=1, columnspan=3, sticky="w",
                                   padx=(10, 0))
-        self.row(i18n.t("time"), 4)
+        self.row(i18n.t("win_title"), 4)
+        winrow = tk.Frame(b, bg=BG)
+        winrow.grid(row=4, column=1, columnspan=3, sticky="w", padx=(10, 0), pady=(8, 0))
+        self.win_var = tk.StringVar(value=self.item.get("window_title", ""))
+        tk.Entry(winrow, textvariable=self.win_var, width=24, relief="solid", bd=1,
+                 font=F(10)).pack(side="left")
+        tk.Label(winrow, text=i18n.t("win_wait"), bg=BG, fg=TEXT_SUB,
+                 font=F(10)).pack(side="left", padx=(16, 4))
+        self.wait_var = tk.IntVar(value=int(self.item.get("wait_window", 30) or 30))
+        ttk.Spinbox(winrow, from_=1, to=300, width=5,
+                    textvariable=self.wait_var).pack(side="left")
+        self.row(i18n.t("time"), 5)
         self.time = TimePicker(b, self.item.get("time", "08:30"), bg=BG)
-        self.time.grid(row=4, column=1, columnspan=3, sticky="w", padx=(10, 0), pady=6)
-        self.build_repeat(b, 5, self.item)
+        self.time.grid(row=5, column=1, columnspan=3, sticky="w", padx=(10, 0), pady=6)
+        self.build_repeat(b, 6, self.item)
 
-        self.row(i18n.t("after_click"), 8)
+        self.row(i18n.t("after_click"), 9)
         table = tk.Frame(b, bg=BG)
-        table.grid(row=8, column=1, columnspan=3, sticky="w", padx=(10, 0), pady=(6, 0))
+        table.grid(row=9, column=1, columnspan=3, sticky="w", padx=(10, 0), pady=(6, 0))
         cols = ("delay", "pos", "act")
         self.tree = ttk.Treeview(table, columns=cols, height=4, show="headings")
         self.tree.heading("delay", text=i18n.t("col_wait"))
         self.tree.heading("pos", text=i18n.t("col_pos"))
         self.tree.heading("act", text=i18n.t("col_act"))
         self.tree.column("delay", width=80, anchor="center")
-        self.tree.column("pos", width=170, anchor="center")
-        self.tree.column("act", width=100, anchor="center")
+        self.tree.column("pos", width=230, anchor="center")
+        self.tree.column("act", width=96, anchor="center")
         self.tree.pack(side="left")
         ops = tk.Frame(table, bg=BG)
         ops.pack(side="left", padx=10, anchor="n")
@@ -377,9 +396,9 @@ class ProgramTaskDialog(Modal, RepeatMixin):
         ttk.Button(ops, text=i18n.t("del_selected"), command=self._del_step).pack(
             fill="x", pady=2)
         tk.Label(b, text=i18n.t("click_hint"),
-                 bg=BG, fg=TEXT_SUB, font=F(9), wraplength=480, justify="left",
+                 bg=BG, fg=TEXT_SUB, font=F(9), wraplength=500, justify="left",
                  anchor="w").grid(
-            row=9, column=1, columnspan=3, sticky="ew", padx=(10, 14), pady=(6, 0))
+            row=10, column=1, columnspan=3, sticky="ew", padx=(10, 14), pady=(6, 0))
         self._refresh_tree()
 
     def _browse(self):
@@ -393,18 +412,44 @@ class ProgramTaskDialog(Modal, RepeatMixin):
                     self.name_var.get() == i18n.t("default_program_name"):
                 self.name_var.set(os.path.splitext(os.path.basename(p))[0])
 
+    def _apply_bettergi(self):
+        exe = self.exe_var.get().strip() or find_bettergi()
+        if exe:
+            self.exe_var.set(exe)
+        self.win_var.set("BetterGI|更好的原神")
+        self.wait_var.set(30)
+        if not self.name_var.get().strip() or \
+                self.name_var.get() == i18n.t("default_program_name"):
+            self.name_var.set(i18n.t("bettergi_name"))
+        # 基于 BetterGI 900x600 标准窗口比例：左侧栏「一条龙」→ 任务列表▶开始
+        self.steps = [
+            {"delay": 2, "x": 0, "y": 0, "rx": 47 / 900, "ry": 221 / 600,
+             "double": False},
+            {"delay": 1.5, "x": 0, "y": 0, "rx": 326 / 900, "ry": 65 / 600,
+             "double": False},
+        ]
+        self._refresh_tree()
+        if not exe:
+            messagebox.showinfo(i18n.t("tip"),
+                                i18n.t("bettergi_pick_exe"), parent=self)
+
     def _refresh_tree(self):
         for iid in self.tree.get_children():
             self.tree.delete(iid)
         for i, s in enumerate(self.steps):
+            if s.get("rx") is not None and s.get("ry") is not None:
+                pos = i18n.t("pos_relative", round(float(s["rx"]) * 100, 1),
+                             round(float(s["ry"]) * 100, 1))
+            else:
+                pos = "%d, %d" % (s.get("x", 0), s.get("y", 0))
             self.tree.insert("", "end", iid=str(i),
-                             values=(s.get("delay", 2),
-                                     "%d, %d" % (s.get("x", 0), s.get("y", 0)),
+                             values=(s.get("delay", 2), pos,
                                      i18n.t("double_click") if s.get("double")
                                      else i18n.t("single_click")))
 
     def _add_step(self):
-        self.steps.append({"delay": 3, "x": 0, "y": 0, "double": False})
+        self.steps.append({"delay": 3, "x": 0, "y": 0, "rx": None, "ry": None,
+                           "double": False})
         self._refresh_tree()
 
     def _selected_index(self):
@@ -429,13 +474,32 @@ class ProgramTaskDialog(Modal, RepeatMixin):
         if i is None:
             messagebox.showinfo(i18n.t("tip"), i18n.t("pick_row_first"), parent=self)
             return
-        CoordPicker(self, on_pick=lambda x, y: self._set_pos(i, x, y))
+        rel = self.win_var.get().strip()
+        CoordPicker(self, rel_title=rel,
+                    on_pick=lambda x, y, rx=None, ry=None:
+                    self._set_pos(i, x, y, rx, ry))
 
-    def _set_pos(self, i, x, y):
+    def _set_pos(self, i, x, y, rx=None, ry=None):
         self.steps[i]["x"] = x
         self.steps[i]["y"] = y
+        self.steps[i]["rx"] = rx
+        self.steps[i]["ry"] = ry
         self._refresh_tree()
         self.tree.selection_set(str(i))
+
+    def _test_run(self):
+        if not self.validate():
+            return
+        data = self.collect()
+
+        def work():
+            try:
+                launch_task(data)
+            except Exception as e:
+                self.after(0, lambda: messagebox.showerror(
+                    i18n.t("tip"), str(e), parent=self))
+        threading.Thread(target=work, daemon=True).start()
+        messagebox.showinfo(i18n.t("tip"), i18n.t("test_started"), parent=self)
 
     def validate(self):
         if not self.name_var.get().strip():
@@ -445,12 +509,22 @@ class ProgramTaskDialog(Modal, RepeatMixin):
         if not exe:
             messagebox.showwarning(i18n.t("tip"), i18n.t("warn_choose_exe"), parent=self)
             return False
+        try:
+            wait_s = int(self.wait_var.get())
+            if not 1 <= wait_s <= 300:
+                raise ValueError
+        except (TypeError, ValueError, tk.TclError):
+            messagebox.showwarning(i18n.t("tip"), i18n.t("warn_wait"), parent=self)
+            return False
         if not valid_hm(self.time.get()):
             messagebox.showwarning(i18n.t("tip"), i18n.t("warn_time"), parent=self)
             return False
         for s in self.steps:
-            if s.get("x") == 0 and s.get("y") == 0:
-                messagebox.showwarning(i18n.t("tip"), i18n.t("warn_no_coord"), parent=self)
+            has_rel = s.get("rx") is not None and s.get("ry") is not None
+            has_abs = (s.get("x") or 0) != 0 or (s.get("y") or 0) != 0
+            if not has_rel and not has_abs:
+                messagebox.showwarning(i18n.t("tip"), i18n.t("warn_no_coord"),
+                                       parent=self)
                 return False
         return self.validate_repeat()
 
@@ -461,6 +535,8 @@ class ProgramTaskDialog(Modal, RepeatMixin):
             "name": self.name_var.get().strip(),
             "exe": self.exe_var.get().strip(),
             "args": self.args_var.get().strip(),
+            "window_title": self.win_var.get().strip(),
+            "wait_window": int(self.wait_var.get()),
             "time": self.time.get(),
             "clicks": self.steps,
             **self.collect_repeat(),
@@ -470,9 +546,10 @@ class ProgramTaskDialog(Modal, RepeatMixin):
 class CoordPicker(tk.Toplevel):
     """全屏半透明坐标拾取：3 秒倒计时后拾取鼠标位置，点击立即拾取，Esc 取消"""
 
-    def __init__(self, parent, on_pick):
+    def __init__(self, parent, on_pick, rel_title=None):
         super().__init__(parent)
         self.on_pick = on_pick
+        self.rel_title = rel_title
         self.overrideredirect(True)
         self.attributes("-topmost", True)
         self.attributes("-alpha", 0.28)
@@ -526,8 +603,21 @@ class CoordPicker(tk.Toplevel):
         except Exception:
             pass
         x, y = get_cursor_pos()
+        rx = ry = None
+        # 配置了目标窗口标题时，若点击落在该窗口内，自动换算为窗口相对比例
+        if self.rel_title:
+            try:
+                hwnd = find_window(self.rel_title)
+                rc = window_rect(hwnd) if hwnd else None
+                if rc:
+                    l, t, r, b = rc
+                    if l <= x <= r and t <= y <= b:
+                        rx = (x - l) / max(1, r - l)
+                        ry = (y - t) / max(1, b - t)
+            except Exception:
+                rx = ry = None
         self.destroy()
-        self.on_pick(x, y)
+        self.on_pick(x, y, rx, ry)
 
     def _cancel(self):
         try:
