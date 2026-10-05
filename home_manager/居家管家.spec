@@ -10,11 +10,15 @@ block_cipher = None
 HERE = os.path.abspath(".")
 ASSETS = os.path.join(HERE, "assets")
 
-# 随包默认资源：排除用户私人铃声与设计源文件、重复图标
+# 随包默认资源：排除用户私人铃声与设计源文件、重复图标、运行时下载目录
 SKIP_FILES = {"起床铃声.mp3", "icon_master.png", "icon.ico", "icon.png"}
+SKIP_DIRS = {os.path.join(ASSETS, "wallpapers")}  # 资源集市下载的用户内容
 
 datas = []
 for root, _dirs, files in os.walk(ASSETS):
+    if os.path.abspath(root) in SKIP_DIRS:
+        _dirs[:] = []
+        continue
     for name in files:
         if name in SKIP_FILES:
             continue
