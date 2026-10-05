@@ -34,6 +34,7 @@ class MarketPage(tk.Frame):
         self._tab = "wallpaper"
         self._category = "waifu"
         self._loaded_cat = None
+        self._wp_gen = 0          # 壁纸加载批次号，丢弃过期回调
 
         head = tk.Frame(self, bg=BG)
         head.pack(fill="x", padx=28, pady=(22, 6))
@@ -99,7 +100,8 @@ class MarketPage(tk.Frame):
         tk.Label(bar, text=i18n.t("market_more"), bg=PRIMARY, fg="#FFFFFF",
                  font=F(10, True), padx=14, pady=5, cursor="hand2"
                  ).pack(side="right")
-        bar.winfo_children()[-1].bind("<Button-1>", lambda e: self._load_wallpapers())
+        bar.winfo_children()[-1].bind("<Button-1>",
+                                      lambda e: self._load_wallpapers(force=True))
         self.more_btn = bar.winfo_children()[-1]
 
         self.wp_status = tk.Label(f, text="", bg=BG, fg=TEXT_SUB, font=F(10))
@@ -118,26 +120,42 @@ class MarketPage(tk.Frame):
                         fg="#FFFFFF" if c == cat else TEXT_SUB)
         self._load_wallpapers()
 
-    def _load_wallpapers(self):
-        for w in self.wp_grid.winfo_children():
-            w.destroy()
-        self._thumbs = []
-        self._loaded_cat = self._category
+    def _load_wallpapers(self, force=False):
+        # 列表返回前保留旧网格，避免切换时整页空白闪烁
+        self._wp_gen += 1
+        gen = self._wp_gen
         self.wp_status.configure(text=i18n.t("market_loading"))
+
+        def ok(items):
+            self._show_wallpapers(items, gen)
+
+        def err(e):
+            if gen != self._wp_gen or not self.wp_status.winfo_exists():
+                return
+            # 已有旧内容时保留，只在空白网格上提示失败
+            if not self.wp_grid.winfo_children():
+                self.wp_status.configure(text=i18n.t("market_fail"))
+            else:
+                self.wp_status.configure(text="")
+
         net.fetch_wallpapers(
             self.app.root, self._category, 9,
-            on_ok=self._show_wallpapers,
-            on_err=lambda e: self.wp_status.configure(text=i18n.t("market_fail")))
+            on_ok=ok, on_err=err, force=force)
 
-    def _show_wallpapers(self, items):
-        if self._loaded_cat != self._category:
+    def _show_wallpapers(self, items, gen):
+        if gen != self._wp_gen:
             return
         if not self.wp_status.winfo_exists():
             return
         self.wp_status.configure(text="")
         if not items:
-            self.wp_status.configure(text=i18n.t("market_fail"))
+            if not self.wp_grid.winfo_children():
+                self.wp_status.configure(text=i18n.t("market_fail"))
             return
+        for w in self.wp_grid.winfo_children():
+            w.destroy()
+        self._thumbs = []
+        self._loaded_cat = self._category
         for col in range(3):
             self.wp_grid.columnconfigure(col, weight=1)
         for i, item in enumerate(items):
@@ -151,21 +169,27 @@ class MarketPage(tk.Frame):
         cnv.pack(fill="x", padx=10, pady=(10, 6))
 
         def show(data):
-            if Image is None or not cnv.winfo_exists():
+            if not cnv.winfo_exists():
                 return
             try:
-                img = Image.open(io.BytesIO(data)).convert("RGB")
-                img.thumbnail((240, 150))
+                img = Image.open(io.BytesIO(data))
                 ph = ImageTk.PhotoImage(img)
                 self._thumbs.append(ph)
-                cnv.configure(image=ph, text="", width=img.width, height=img.height)
+                cnv.configure(image=ph, text="", width=ph.width(),
+                              height=ph.height())
                 cnv.image = ph
             except Exception:
                 pass
 
-        net.fetch_bytes(self.app.root, item["thumb"], on_ok=show, on_err=lambda e: None)
+        net.fetch_thumb(self.app.root, item["thumb"],
+                        on_ok=show, on_err=lambda e: None,
+                        resize=item.get("resize", False),
+                        remember=item.get("remember", False))
 
-        tk.Label(card, text=str(item["title"])[:18], bg=CARD, fg=TEXT_SUB,
+        title = item["title"]
+        if i18n.has("cat_" + str(title)):
+            title = i18n.t("cat_" + str(title))
+        tk.Label(card, text=str(title)[:18], bg=CARD, fg=TEXT_SUB,
                  font=F(8), wraplength=220, justify="center").pack(padx=8)
         ops = tk.Frame(card, bg=CARD)
         ops.pack(pady=(2, 10))

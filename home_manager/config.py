@@ -4,7 +4,7 @@ import os
 import sys
 
 APP_NAME = "居家管家"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.1.1"
 
 # GitHub 发布地址（仓库建好后填入 owner/repo，用于检查更新）
 GITHUB_REPO = "Yimo0101/home-manager"   # GitHub 仓库，用于 Release 检查更新
@@ -32,6 +32,10 @@ AUDIO_DIR = os.path.join(USER_ASSETS, "audio")
 WALLPAPER_DIR = os.path.join(USER_ASSETS, "wallpapers")
 MASCOT_DIR = os.path.join(USER_ASSETS, "mascots")
 
+# 缩略图磁盘缓存（集市切分类时秒开，不重复下载原图）
+CACHE_DIR = os.path.join(DATA_DIR, "cache")
+THUMB_CACHE_DIR = os.path.join(CACHE_DIR, "thumbs")
+
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
 LOG_FILE = os.path.join(DATA_DIR, "app.log")
 
@@ -49,7 +53,7 @@ def asset_path(rel):
 
 def ensure_dirs():
     for d in (DATA_DIR, USER_ASSETS, AUDIO_DIR, WALLPAPER_DIR, MASCOT_DIR,
-              BUNDLE_ASSETS):
+              CACHE_DIR, THUMB_CACHE_DIR, BUNDLE_ASSETS):
         try:
             os.makedirs(d, exist_ok=True)
         except OSError:
