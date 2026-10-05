@@ -1,0 +1,3 @@
+﻿铃声已生成: C:\Users\HP\Desktop\居家管家\home_manager\assets\default_ring.wav
+背景已生成: C:\Users\HP\Desktop\居家管家\home_manager\assets\default_bg.png
+图标已生成: C:\Users\HP\Desktop\居家管家\home_manager\assets\icon.png C:\Users\HP\Desktop\居家管家\home_manager\assets\icon.ico

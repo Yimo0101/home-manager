@@ -1,0 +1,11 @@
+﻿{
+  "audio_url": "https://2130825428-amk-2130605177-default-534849.vod.cn-north-1.volcvideo.com/88f10701-fde9-460a-b1a6-3b88cefc2fda.mp3?preview=1&auth_key=1791270396-r0-u0-0fd546a2e45c492316142bf52372da56",
+  "duration": 26.05,
+  "request_id": "20261005143241574EA90FB9C5004EAFA4",
+  "status": "completed",
+  "task_id": "amk-tool-trim-audio-1659269008898",
+  "task_type": "trim-audio",
+  "usage": {
+    "normalized_usage": 0.004342
+  }
+}

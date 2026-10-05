@@ -1,0 +1,12 @@
+﻿截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_6_dlg_alarm.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_7_dlg_program.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_8_dlg_event.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_9_about.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_6_dlg_alarm.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_7_dlg_program.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_8_dlg_event.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_9_about.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_6_dlg_alarm.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_7_dlg_program.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_8_dlg_event.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_9_about.png

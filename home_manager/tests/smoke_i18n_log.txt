@@ -1,0 +1,15 @@
+﻿截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_1_alarms.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_2_tasks.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_3_calendar.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_4_settings.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\zh_5_popup.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_1_alarms.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_2_tasks.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_3_calendar.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_4_settings.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\ja_5_popup.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_1_alarms.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_2_tasks.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_3_calendar.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_4_settings.png
+截图: C:\Users\HP\Desktop\居家管家\home_manager\tests\shots_i18n\en_5_popup.png

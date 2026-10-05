@@ -1,0 +1,3 @@
+﻿已设置铃声: 起床闹钟 -> C:\Users\HP\Desktop\居家管家\home_manager\assets\audio\起床铃声.mp3
+MCI open/play: True
+验证完成

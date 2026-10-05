@@ -1,0 +1,11 @@
+﻿{
+  "audio_url": "https://2130825428-amk-2130605177-default-534849.vod.cn-north-1.volcvideo.com/3e24ec9e-e298-4942-8cf1-80669a59316e.mp3?preview=1&auth_key=1791270349-r0-u0-d6363119bfcb03fd199699b429741a46",
+  "duration": 29.049229,
+  "request_id": "20261005143241574EA90FB9C5004EAFA4",
+  "status": "completed",
+  "task_id": "amk-tool-extract-audio-1402869535746",
+  "task_type": "extract-audio",
+  "usage": {
+    "normalized_usage": 0.004842
+  }
+}

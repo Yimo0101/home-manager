@@ -1,0 +1,27 @@
+﻿python.exe : Traceback (most recent call last):
+所在位置 行:1 字符: 429
++ ... e_manager"; & $py tests\shot_transition.py *> tests\shot_transition_l ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\HP\Desktop\居家管家\home_manager\tests\shot_transition.py", line 60, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\HP\Desktop\居家管家\home_manager\tests\shot_transition.py", line 22, in main
+    app = App()
+  File "C:\Users\HP\Desktop\居家管家\home_manager\ui_main.py", line 229, in __init__
+    self._build_body()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HP\Desktop\居家管家\home_manager\ui_main.py", line 257, in _build_body
+    self.show_page(self.current_page)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\居家管家\home_manager\ui_main.py", line 271, in show_page
+    self.sidebar.set_active(key)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\HP\Desktop\居家管家\home_manager\ui_main.py", line 134, in set_active
+    target = self._cy_of(key)
+  File "C:\Users\HP\Desktop\居家管家\home_manager\ui_main.py", line 120, in _cy_of
+    return self._nav_top + [k for k, _, _ in NAV_KEYS].index(key) * 54
+           ^^^^^^^^^^^^^
+AttributeError: 'Sidebar' object has no attribute '_nav_top'
