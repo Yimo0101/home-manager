@@ -25,7 +25,7 @@
 
 ## 直接使用（便携版）
 
-1. 到 [Releases](../../releases) 下载 `居家管家-vX.X.X-portable.zip`；
+1. 到 [Releases](https://github.com/Yimo0101/home-manager/releases) 下载 `HomeManager-vX.X.X-portable.zip`；
 2. 解压到任意目录（**不要放在 `Program Files` 等需要管理员权限的目录**）；
 3. 双击 `居家管家.exe` 运行，数据保存在程序同目录的 `data\` 文件夹，复制整个文件夹即可迁移/备份；
 4. 在「设置」里可以开机自启、检查更新。
@@ -50,7 +50,7 @@ powershell -ExecutionPolicy Bypass -File .\build_release.ps1 -Python "C:\路径\
 产物：
 
 - `home_manager\dist\居家管家\`：可直接分发的文件夹；
-- `home_manager\dist\居家管家-vX.X.X-portable.zip`：上传到 Release 的压缩包。
+- `home_manager\dist\HomeManager-vX.X.X-portable.zip`：上传到 Release 的压缩包（用英文名避免部分网络环境下中文文件名乱码）。
 
 ## 在线更新机制
 

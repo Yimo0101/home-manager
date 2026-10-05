@@ -37,7 +37,7 @@ try {
 
     # 版本号
     $ver = (& $Python -c "import sys; sys.path.insert(0,'.'); import config; print(config.APP_VERSION)").Trim()
-    $Zip = Join-Path $App ("dist\居家管家-v{0}-portable.zip" -f $ver)
+    $Zip = Join-Path $App ("dist\HomeManager-v{0}-portable.zip" -f $ver)
     if (Test-Path $Zip) { Remove-Item $Zip -Force }
     Write-Host "==> 压缩 zip：$Zip"
     Compress-Archive -Path (Join-Path $App "dist\居家管家") -DestinationPath $Zip -CompressionLevel Optimal
